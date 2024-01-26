@@ -1,0 +1,48 @@
+Write your Task 2 answers in this file
+
+Task 2.1:
+mongoimport --db=bedandbreakfast -c listings_and_reviews --type=json --file=listings.json
+
+Task 2.2:
+db.listings_and_reviews.aggregate([
+{
+    $match: {
+            "address.country": {$regex: "Australia", $options: "i"}
+        }
+},
+{
+    $out: "listings"
+}
+])
+
+Task 2.3:
+db.listings.aggregate([
+{
+     $unwind: "$reviews"   
+},
+{
+    $project: {
+        _id:0, "reviews.date": 1, "reviews.listing_id":1, 
+        "reviews.reviewer_name":{$replaceAll: {input: "$reviews.reviewer_name", find: ",", replacement:""}} ,
+        "reviews.comments":{$replaceAll: {input: "$reviews.comments", find: "\r", replacement:""}}
+    }
+},
+{
+    $addFields:
+      {
+        "reviews.comments": { $replaceAll: { input: "$reviews.comments", find: "\n", replacement: "" } }
+      }
+},
+{
+    $out: "reviews"
+}
+])
+
+Task 2.4:
+db.listings.updateMany(
+    {},
+    {$unset: "reviews}
+);
+
+Task 2.5
+mongoexport --db=bedandbreakfast --collection=reviews --type=csv --fields=reviews.date,reviews.listing_id,reviews.reviewer_name,reviews.comments --out=reviews.csv
