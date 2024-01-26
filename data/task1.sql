@@ -6,7 +6,6 @@ create database bedandbreakfast;
 use bedandbreakfast;
 
 create table users (
-    -- user_id int auto_increment,
     email varchar(128) not null,
     name varchar(128) not null,
 
@@ -32,7 +31,6 @@ create table reviews (
    comments text not null,
 
    primary key(id)
---    constraint fk_listing_id foreign key(listing_id) references booking_id(listing_id)
 );
 
 grant all privileges on bedandbreakfast.* to fred@'%';
